@@ -1,0 +1,175 @@
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useAppDispatch, useAppSelector } from '../../hooks/hooks.ts';
+import { loginUser, registerUser } from '../../store/slices/userSlice.ts';
+import { useNavigate } from 'react-router-dom';
+import { Box, TextField, Button, Typography, Alert, CircularProgress, FormControlLabel, Checkbox } from '@mui/material';
+import { loginSchema, registerSchema } from '../../validation/schemas';
+import { checkEmail } from '../../api/apiUser';
+
+interface AuthFormProps {
+  type: 'login' | 'register';
+}
+
+type FormData = {
+  email: string;
+  password: string;
+  username?: string;
+  repeatPassword?: string;
+  acceptTerms?: boolean;
+};
+
+export const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const { status, error } = useAppSelector((state) => state.user);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setError,
+  } = useForm<FormData>({
+    resolver: yupResolver(type === 'login' ? loginSchema : registerSchema),
+  });
+
+  const onSubmit = async (data: FormData) => {
+    if (type === 'login') {
+      await dispatch(loginUser({ email: data.email, password: data.password }));
+    } else {
+      try {
+        const emailCheck = await checkEmail(data.email);
+        if (emailCheck.exists) {
+          setError('email', {
+            type: 'manual',
+            message: 'Пользователь с таким email уже существует',
+          });
+          return;
+        }
+        await dispatch(
+          registerUser({
+            email: data.email,
+            password: data.password,
+            username: data.username!,
+          })
+        );
+      } catch (error) {
+        setError('email', {
+          type: 'manual',
+          message: 'Ошибка при проверке email',
+        });
+        return;
+      }
+    }
+    navigate('/');
+  };
+
+  return (
+    <Box
+      component="form"
+      onSubmit={handleSubmit(onSubmit)}
+      sx={{
+        maxWidth: 400,
+        mx: 'auto',
+        mt: 4,
+        p: 3,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 2,
+        backgroundColor: 'var(--white)',
+        boxShadow:
+          '0 1px 3px 0 var(--shadow), 0 1px 7px 0 rgba(0, 0, 0, 0.03), 0 3px 13px 0 rgba(0, 0, 0, 0.04), 0 5px 24px 0 rgba(0, 0, 0, 0.04), 0 9px 44px 0 rgba(0, 0, 0, 0.05), 0 22px 106px 0 rgba(0, 0, 0, 0.07)',
+      }}
+    >
+      <Typography variant="h5" component="h1" align="center">
+        {type === 'login' ? 'Sign In' : 'Create new account'}
+      </Typography>
+
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+      )}
+
+      {type === 'register' && (
+        <TextField
+          label="Username"
+          {...register('username')}
+          error={!!errors.username}
+          helperText={errors.username?.message}
+          fullWidth
+        />
+      )}
+
+      <TextField
+        label="Email"
+        type="email"
+        {...register('email')}
+        error={!!errors.email}
+        helperText={errors.email?.message}
+        fullWidth
+      />
+
+      <TextField
+        label="Password"
+        type="password"
+        {...register('password')}
+        error={!!errors.password}
+        helperText={errors.password?.message}
+        fullWidth
+      />
+
+      {type === 'register' && (
+        <>
+          <TextField
+            label="Repeat password"
+            type="password"
+            {...register('repeatPassword')}
+            error={!!errors.repeatPassword}
+            helperText={errors.repeatPassword?.message}
+            fullWidth
+          />
+          <FormControlLabel
+            sx={{ textAlign: 'left' }}
+            control={<Checkbox {...register('acceptTerms')} color="primary" />}
+            label="I agree to the processing of my personal information"
+          />
+          {errors.acceptTerms && (
+            <Typography color="error" variant="caption">
+              {errors.acceptTerms.message}
+            </Typography>
+          )}
+        </>
+      )}
+
+      <Button type="submit" variant="contained" size="large" disabled={status === 'loading'} sx={{ mt: 1 }}>
+        {status === 'loading' ? (
+          <CircularProgress size={24} color="inherit" />
+        ) : type === 'login' ? (
+          'Sign In'
+        ) : (
+          'Create'
+        )}
+      </Button>
+
+      <Typography align="center">
+        {type === 'login' ? (
+          <>
+            Don't have an account?{' '}
+            <Button color="primary" onClick={() => navigate('/register')}>
+              Sign Up
+            </Button>
+          </>
+        ) : (
+          <>
+            Already have an account?{' '}
+            <Button color="primary" onClick={() => navigate('/login')}>
+              Sign In
+            </Button>
+          </>
+        )}
+      </Typography>
+    </Box>
+  );
+};
