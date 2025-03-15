@@ -5,7 +5,7 @@ import { fetchArticle } from '../../store/slices/articlesSlice.ts';
 import { Box, CircularProgress, Alert } from '@mui/material';
 import { Blog } from '../../components/Blog/Blog';
 
-export const ArticlePage: React.FC = () => {
+const ArticlePage = () => {
   const { slug } = useParams<{ slug: string }>();
   const dispatch = useAppDispatch();
   const { currentArticle, status, error } = useAppSelector((state) => state.articles);
@@ -32,5 +32,11 @@ export const ArticlePage: React.FC = () => {
     );
   }
 
-  return <Blog article={currentArticle} isFullView />;
+  return (
+    <Box sx={{ pb: 2 }}>
+      <Blog article={currentArticle} isFullView />
+    </Box>
+  );
 };
+
+export default ArticlePage;

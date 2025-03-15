@@ -1,0 +1,57 @@
+.actions {
+  display: flex;
+  gap: 0.7rem;
+  justify-content: flex-end;
+  min-width: 200px;
+
+  .deleteButton {
+    background: none;
+    border: var(--error-color) 1px solid;
+    color: var(--error-color);
+    border-radius: 4px;
+    cursor: pointer;
+    height: 30px;
+    width: 90px;
+  }
+
+  .editButton {
+    background: none;
+    border: var(--sign-up) 1px solid;
+    color: var(--sign-up);
+    border-radius: 4px;
+    cursor: pointer;
+    height: 30px;
+    width: 70px;
+  }
+
+  button {
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+}
+
+.deleteDialog {
+  :global {
+    .MuiPaper-root {
+      padding: 1rem;
+      border-radius: 8px;
+    }
+
+    .MuiDialogContent-root {
+      padding: 1.5rem 1rem;
+    }
+
+    .MuiDialogActions-root {
+      padding: 1rem;
+      gap: 1rem;
+    }
+  }
+} 

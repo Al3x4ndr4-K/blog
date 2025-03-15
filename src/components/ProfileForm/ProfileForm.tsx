@@ -6,12 +6,12 @@ import { updateUserProfile } from '../../store/slices/userSlice.ts';
 import { Box, TextField, Button, Typography, Alert, CircularProgress } from '@mui/material';
 import { profileSchema } from '../../validation/schemas';
 
-type FormData = {
+interface FormData {
   username: string;
   email: string;
-  newPassword: string | null;
-  image: string | null;
-};
+  newPassword?: string;
+  image?: string;
+}
 
 export const ProfileForm: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -26,8 +26,8 @@ export const ProfileForm: React.FC = () => {
     defaultValues: {
       username: user?.username || '',
       email: user?.email || '',
-      newPassword: null,
-      image: user?.image || null,
+      newPassword: '',
+      image: user?.image || '',
     },
   });
 
@@ -56,7 +56,7 @@ export const ProfileForm: React.FC = () => {
         maxWidth: 400,
         mx: 'auto',
         mt: 4,
-        p: 3,
+        p: 4,
         display: 'flex',
         flexDirection: 'column',
         gap: 2,
@@ -84,7 +84,7 @@ export const ProfileForm: React.FC = () => {
       />
 
       <TextField
-        label="Email"
+        label="Email address"
         type="email"
         {...register('email')}
         error={!!errors.email}

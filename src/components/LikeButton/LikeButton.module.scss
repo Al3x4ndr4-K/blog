@@ -1,0 +1,46 @@
+.likeContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  min-width: fit-content;
+
+  img {
+    width: 24px;
+    height: 24px;
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+
+    &:active {
+      transform: scale(0.9);
+    }
+  }
+
+  .liking {
+    animation: pulse 0.5s ease;
+  }
+
+  span {
+    transition: all 0.3s ease;
+
+    &.updating {
+      transform: scale(1.1);
+      color: var(--like-color);
+    }
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

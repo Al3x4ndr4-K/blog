@@ -1,3 +1,5 @@
+import { BaseEntity, PaginatedResponse } from './common';
+
 export interface Author {
   username: string;
   bio: string | null;
@@ -5,7 +7,7 @@ export interface Author {
   following: boolean;
 }
 
-export interface Article {
+export interface Article extends BaseEntity {
   slug: string;
   title: string;
   description: string;
@@ -16,6 +18,25 @@ export interface Article {
   favorited: boolean;
   favoritesCount: number;
   author: Author;
+}
+
+export interface CreateArticleDTO {
+  title: string;
+  description: string;
+  body: string;
+  tagList: string[];
+}
+
+export interface UpdateArticleDTO extends Partial<CreateArticleDTO> {
+  slug: string;
+}
+
+export interface ArticleFilters {
+  tag?: string;
+  author?: string;
+  favorited?: string;
+  limit?: number;
+  offset?: number;
 }
 
 export interface ArticlesResponse {
@@ -30,12 +51,4 @@ export interface ArticlesState {
   error: string | null;
   currentPage: number;
   totalArticles: number;
-}
-
-export interface FetchArticlesParams {
-  limit: number;
-  offset: number;
-  tag?: string;
-  author?: string;
-  favorited?: string;
 }

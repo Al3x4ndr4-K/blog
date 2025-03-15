@@ -1,28 +1,43 @@
 import * as yup from 'yup';
 
 export const loginSchema = yup.object().shape({
-  email: yup.string().required('Email обязателен').email('Введите корректный email'),
-  password: yup.string().required('Пароль обязателен'),
+  email: yup.string().required('Email is required').email('Enter a valid email'),
+  password: yup.string().required('Password is required'),
 });
 
 export const registerSchema = yup.object().shape({
   username: yup
     .string()
-    .required('Имя пользователя обязательно')
-    .min(3, 'Минимум 3 символа')
-    .max(20, 'Максимум 20 символов'),
-  email: yup.string().required('Email обязателен').email('Введите корректный email'),
-  password: yup.string().required('Пароль обязателен').min(6, 'Минимум 6 символов').max(40, 'Максимум 40 символов'),
+    .required('Username is required')
+    .min(3, 'Minimum 3 characters')
+    .max(20, 'Maximum 20 characters'),
+  email: yup.string().required('Email is required').email('Enter a valid email'),
+  password: yup
+    .string()
+    .required('Password is required')
+    .min(6, 'Minimum 6 characters')
+    .max(40, 'Maximum 40 characters'),
   repeatPassword: yup
     .string()
-    .required('Повторите пароль')
-    .oneOf([yup.ref('password')], 'Пароли должны совпадать'),
-  acceptTerms: yup.boolean().oneOf([true], 'Необходимо согласиться с условиями'),
+    .required('Repeat password')
+    .oneOf([yup.ref('password')], 'Passwords must match'),
+  acceptTerms: yup.boolean().oneOf([true], 'You must agree to the terms'),
 });
 
 export const profileSchema = yup.object().shape({
-  username: yup.string().required('Имя пользователя обязательно'),
-  email: yup.string().required('Email обязателен').email('Введите корректный email'),
-  newPassword: yup.string().min(6, 'Минимум 6 символов').max(40, 'Максимум 40 символов').nullable(),
-  image: yup.string().url('Введите корректный URL').nullable(),
+  username: yup.string().required('Email is required'),
+  email: yup.string().required('Email is required').email('Enter a valid email'),
+  newPassword: yup
+    .string()
+    .transform((value) => (value === '' ? undefined : value))
+    .optional()
+    .test('password-length', 'Minimum 6 characters', (value) => {
+      if (!value) return true;
+      return value.length >= 6;
+    })
+    .test('password-max-length', 'Maximum 40 characters', (value) => {
+      if (!value) return true;
+      return value.length <= 40;
+    }),
+  image: yup.string().url('Enter a valid URL').optional(),
 });

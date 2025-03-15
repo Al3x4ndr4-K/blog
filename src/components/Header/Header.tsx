@@ -23,13 +23,15 @@ export const Header = () => {
       <div className={styles.buttons}>
         {user ? (
           <>
-            <button className={styles.createArticle}>Создать статью</button>
+            <button className={styles.createArticle} onClick={() => navigate('/new-article')}>
+              Create article
+            </button>
             <div className={styles.userInfo} onClick={() => navigate('/profile')}>
               <img src={user.image || '/avatar.svg'} alt="Avatar" />
               <span>{user.username}</span>
             </div>
             <button className={styles.logout} onClick={handleLogout}>
-              Выйти
+              Log Out
             </button>
           </>
         ) : (

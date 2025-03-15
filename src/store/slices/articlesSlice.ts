@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { Article, ArticlesState } from '../../types/articlesTypes.ts';
+import { Article, ArticlesResponse, ArticlesState } from '../../types/articlesTypes.ts';
 import { fetchArticle as fetchArticleApi, fetchArticlesApi } from '../../api/apiArticles.ts';
 
 interface FetchArticlesParams {
@@ -16,7 +16,7 @@ const initialState: ArticlesState = {
   totalArticles: 0,
 };
 
-export const fetchArticles = createAsyncThunk<{ articles: Article[]; articlesCount: number }, FetchArticlesParams>(
+export const fetchArticles = createAsyncThunk<ArticlesResponse, FetchArticlesParams>(
   'articles/fetchArticles',
   async ({ limit, offset }) => {
     return await fetchArticlesApi({ limit, offset });
@@ -43,15 +43,19 @@ const articlesSlice = createSlice({
     builder
       .addCase(fetchArticles.pending, (state) => {
         state.status = 'loading';
+        state.error = null;
       })
       .addCase(fetchArticles.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.articles = action.payload.articles;
         state.totalArticles = action.payload.articlesCount;
+        state.error = null;
       })
       .addCase(fetchArticles.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message || 'Failed to fetch articles';
+        state.articles = [];
+        state.totalArticles = 0;
       })
       .addCase(fetchArticle.pending, (state) => {
         state.status = 'loading';

@@ -1,27 +1,49 @@
 * {
   box-sizing: border-box;
+  font-family:
+    var(--font-family-inter),
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
 }
 
 :root {
-  --Inter: 'Inter', sans-serif;
-  --Roboto: 'Roboto', sans-serif;
+  --font-family-inter: 'Inter';
+  --font-family-roboto: 'Roboto';
   --background: #ebeef3;
   --sign-up: #52c41a;
   --white: #ffffff;
   --heading-color: #000000;
   --title: #1890ff;
   --shadow: #d9d9d9;
+  --error-color: #f5222d;
+  --like-color: #ff0707;
 }
 
 #root {
   margin: 0 auto;
   min-height: 100vh;
   text-align: center;
-  font-family: var(--Inter), sans-serif;
+  font-family:
+    var(--font-family-inter),
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
   background: var(--background);
 }
 
+html {
+  height: 100%;
+  background-color: var(--background);
+}
+
+html,
 body {
+  min-height: 100vh;
   margin: 0;
-  font-family: var(--Inter), sans-serif;
+  font-family:
+    var(--font-family-inter),
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
 }

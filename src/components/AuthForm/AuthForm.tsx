@@ -6,19 +6,19 @@ import { loginUser, registerUser } from '../../store/slices/userSlice.ts';
 import { useNavigate } from 'react-router-dom';
 import { Box, TextField, Button, Typography, Alert, CircularProgress, FormControlLabel, Checkbox } from '@mui/material';
 import { loginSchema, registerSchema } from '../../validation/schemas';
-import { checkEmail } from '../../api/apiUser';
+import { toast } from 'react-toastify';
 
 interface AuthFormProps {
   type: 'login' | 'register';
 }
 
-type FormData = {
+interface FormData {
   email: string;
   password: string;
   username?: string;
   repeatPassword?: string;
   acceptTerms?: boolean;
-};
+}
 
 export const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
   const dispatch = useAppDispatch();
@@ -29,40 +29,41 @@ export const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
     register,
     handleSubmit,
     formState: { errors },
-    setError,
   } = useForm<FormData>({
     resolver: yupResolver(type === 'login' ? loginSchema : registerSchema),
   });
 
   const onSubmit = async (data: FormData) => {
-    if (type === 'login') {
-      await dispatch(loginUser({ email: data.email, password: data.password }));
-    } else {
-      try {
-        const emailCheck = await checkEmail(data.email);
-        if (emailCheck.exists) {
-          setError('email', {
-            type: 'manual',
-            message: 'Пользователь с таким email уже существует',
-          });
-          return;
+    try {
+      if (type === 'login') {
+        const result = await dispatch(
+          loginUser({
+            email: data.email,
+            password: data.password,
+          })
+        ).unwrap();
+        if (result) {
+          navigate('/');
         }
-        await dispatch(
+      } else {
+        const result = await dispatch(
           registerUser({
             email: data.email,
             password: data.password,
             username: data.username!,
           })
-        );
-      } catch (error) {
-        setError('email', {
-          type: 'manual',
-          message: 'Ошибка при проверке email',
-        });
-        return;
+        ).unwrap();
+        if (result) {
+          navigate('/');
+        }
+      }
+    } catch (err) {
+      if (typeof err === 'string') {
+        toast.error(err);
+      } else {
+        toast.error('Authentication failed');
       }
     }
-    navigate('/');
   };
 
   return (
@@ -103,7 +104,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
       )}
 
       <TextField
-        label="Email"
+        label="Email address"
         type="email"
         {...register('email')}
         error={!!errors.email}
