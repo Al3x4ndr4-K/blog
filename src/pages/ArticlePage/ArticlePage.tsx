@@ -1,16 +1,16 @@
-import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks/hooks.ts';
 import { fetchArticle } from '../../store/slices/articlesSlice.ts';
-import { Box, CircularProgress, Alert } from '@mui/material';
+import { Alert, Box, CircularProgress } from '@mui/material';
 import { Blog } from '../../components/Blog/Blog';
+import { useEffect } from 'react';
 
 const ArticlePage = () => {
   const { slug } = useParams<{ slug: string }>();
   const dispatch = useAppDispatch();
   const { currentArticle, status, error } = useAppSelector((state) => state.articles);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (slug) {
       dispatch(fetchArticle(slug));
     }

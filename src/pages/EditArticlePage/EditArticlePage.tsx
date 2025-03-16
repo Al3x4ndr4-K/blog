@@ -1,21 +1,21 @@
-import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArticleForm } from '../../components/ArticleForm/ArticleForm';
 import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
 import { fetchArticle } from '../../store/slices/articlesSlice';
 import { updateArticle } from '../../api/apiArticles';
-import { Box, CircularProgress, Alert } from '@mui/material';
+import { Alert, Box, CircularProgress } from '@mui/material';
 import { CreateArticleDTO } from '../../types/articlesTypes';
 import { toast } from 'react-toastify';
+import { useEffect, useState } from 'react';
 
 const EditArticlePage = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { currentArticle, status, error } = useAppSelector((state) => state.articles);
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (slug) {
       dispatch(fetchArticle(slug));
     }

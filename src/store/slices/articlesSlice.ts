@@ -35,9 +35,6 @@ const articlesSlice = createSlice({
     setCurrentPage(state, action) {
       state.currentPage = action.payload;
     },
-    clearCurrentArticle(state) {
-      state.currentArticle = null;
-    },
   },
   extraReducers: (builder) => {
     builder
@@ -72,4 +69,4 @@ const articlesSlice = createSlice({
 });
 
 export default articlesSlice.reducer;
-export const { setCurrentPage, clearCurrentArticle } = articlesSlice.actions;
+export const { setCurrentPage } = articlesSlice.actions;

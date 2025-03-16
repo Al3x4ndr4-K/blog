@@ -77,7 +77,7 @@ const customEslintConfig = {
 
 module.exports = [
   {
-    ignores: ['**/node_modules', '**/dist', '**/build'],
+    ignores: ['**/node_modules', '**/dist', '**/build', 'postcss.config.mjs'],
   },
   ...fixupConfigRules(customEslintConfig),
 ];

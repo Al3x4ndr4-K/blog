@@ -26,9 +26,9 @@ export const Blog: React.FC<BlogProps> = ({ article, isFullView = false }) => {
               {article.title}
             </Link>
             <LikeButton
-              slug={article.slug}
-              initialFavorited={article.favorited}
-              initialFavoritesCount={article.favoritesCount}
+              articleSlug={article.slug}
+              favoritesCount={article.favoritesCount}
+              favorited={article.favorited}
             />
           </div>
           <div className={blog.tags}>
@@ -51,7 +51,7 @@ export const Blog: React.FC<BlogProps> = ({ article, isFullView = false }) => {
       </div>
       <div className={blog.contentWrapper}>
         <div className={blog.description}>{article.description}</div>
-        {isFullView && isAuthor && <ArticleActions slug={article.slug} />}
+        {isFullView && isAuthor && <ArticleActions article={article} />}
       </div>
       {isFullView && (
         <div className={blog.text}>

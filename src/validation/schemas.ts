@@ -1,43 +1,35 @@
 import * as yup from 'yup';
 
 export const loginSchema = yup.object().shape({
-  email: yup.string().required('Email is required').email('Enter a valid email'),
+  email: yup.string().email('Invalid email').required('Email is required'),
   password: yup.string().required('Password is required'),
 });
 
 export const registerSchema = yup.object().shape({
-  username: yup
-    .string()
-    .required('Username is required')
-    .min(3, 'Minimum 3 characters')
-    .max(20, 'Maximum 20 characters'),
-  email: yup.string().required('Email is required').email('Enter a valid email'),
+  username: yup.string().required('Username is required'),
+  email: yup.string().email('Invalid email').required('Email is required'),
   password: yup
     .string()
-    .required('Password is required')
-    .min(6, 'Minimum 6 characters')
-    .max(40, 'Maximum 40 characters'),
+    .min(6, 'Password must be at least 6 characters')
+    .max(40, 'Password must not exceed 40 characters')
+    .required('Password is required'),
   repeatPassword: yup
     .string()
-    .required('Repeat password')
-    .oneOf([yup.ref('password')], 'Passwords must match'),
-  acceptTerms: yup.boolean().oneOf([true], 'You must agree to the terms'),
+    .oneOf([yup.ref('password')], 'Passwords must match')
+    .required('Please confirm your password'),
+  acceptTerms: yup.boolean().oneOf([true], 'Please accept the terms'),
 });
 
 export const profileSchema = yup.object().shape({
-  username: yup.string().required('Email is required'),
-  email: yup.string().required('Email is required').email('Enter a valid email'),
-  newPassword: yup
-    .string()
-    .transform((value) => (value === '' ? undefined : value))
-    .optional()
-    .test('password-length', 'Minimum 6 characters', (value) => {
-      if (!value) return true;
-      return value.length >= 6;
-    })
-    .test('password-max-length', 'Maximum 40 characters', (value) => {
-      if (!value) return true;
-      return value.length <= 40;
-    }),
+  username: yup.string().required('Username is required'),
+  email: yup.string().email('Invalid email').required('Email is required'),
+  newPassword: yup.string().optional(),
   image: yup.string().url('Enter a valid URL').optional(),
+});
+
+export const articleSchema = yup.object().shape({
+  title: yup.string().required('Title is required'),
+  description: yup.string().required('Description is required'),
+  body: yup.string().required('Article text is required'),
+  tagList: yup.array().of(yup.string().required()).required().default([]),
 });

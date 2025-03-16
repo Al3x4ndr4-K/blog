@@ -7,20 +7,19 @@ import { MESSAGES } from '../../constants/messages';
 import { formatNumber } from '../../utils/formatters';
 import { retry } from '../../utils/retry';
 import styles from './LikeButton.module.scss';
+import { LikeButtonProps } from '../../types/components';
 
-interface LikeButtonProps {
-  slug: string;
-  initialFavorited: boolean;
-  initialFavoritesCount: number;
-}
-
-const LikeButtonComponent: React.FC<LikeButtonProps> = ({ slug, initialFavorited, initialFavoritesCount }) => {
+export const LikeButton: React.FC<LikeButtonProps> = ({
+  articleSlug,
+  favoritesCount: initialCount,
+  favorited: initialFavorited,
+}) => {
   const navigate = useNavigate();
   const { user } = useAppSelector((state) => state.user);
-  const [favorited, setFavorited] = React.useState(initialFavorited);
-  const [favoritesCount, setFavoritesCount] = React.useState(initialFavoritesCount);
   const [isLiking, setIsLiking] = React.useState(false);
   const [isUpdating, setIsUpdating] = React.useState(false);
+  const [favorited, setFavorited] = React.useState(initialFavorited);
+  const [favoritesCount, setFavoritesCount] = React.useState(initialCount);
 
   const handleLike = async () => {
     if (!user) {
@@ -35,10 +34,10 @@ const LikeButtonComponent: React.FC<LikeButtonProps> = ({ slug, initialFavorited
     setIsLiking(true);
     setIsUpdating(true);
     setFavorited(!favorited);
-    setFavoritesCount((prev) => (favorited ? prev - 1 : prev + 1));
+    setFavoritesCount(favorited ? favoritesCount - 1 : favoritesCount + 1);
 
     try {
-      await retry(() => (favorited ? unfavoriteArticle(slug) : favoriteArticle(slug)));
+      await retry(() => (favorited ? unfavoriteArticle(articleSlug) : favoriteArticle(articleSlug)));
     } catch (error) {
       setFavorited(previousState.favorited);
       setFavoritesCount(previousState.favoritesCount);
@@ -62,11 +61,3 @@ const LikeButtonComponent: React.FC<LikeButtonProps> = ({ slug, initialFavorited
     </div>
   );
 };
-
-export const LikeButton = React.memo(LikeButtonComponent, (prevProps, nextProps) => {
-  return (
-    prevProps.slug === nextProps.slug &&
-    prevProps.initialFavorited === nextProps.initialFavorited &&
-    prevProps.initialFavoritesCount === nextProps.initialFavoritesCount
-  );
-});

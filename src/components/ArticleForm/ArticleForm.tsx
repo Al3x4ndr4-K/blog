@@ -1,8 +1,10 @@
-import React from 'react';
-import { TextField, Button, Paper, Box, Typography } from '@mui/material';
-import { useForm } from '../../hooks/useForm';
-import { CreateArticleDTO } from '../../types/articlesTypes';
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Box, TextField, Button, Paper, Typography } from '@mui/material';
+import { articleSchema } from '../../validation/schemas';
 import styles from './ArticleForm.module.scss';
+import { CreateArticleDTO } from '../../types/articlesTypes';
 
 interface ArticleFormProps {
   initialValues: CreateArticleDTO;
@@ -17,21 +19,24 @@ export const ArticleForm: React.FC<ArticleFormProps> = ({
   isEdit = false,
   isLoading = false,
 }) => {
-  const [tags, setTags] = React.useState<string[]>(initialValues.tagList?.length ? initialValues.tagList : ['']);
+  const [tags, setTags] = useState<string[]>(initialValues.tagList?.length ? initialValues.tagList : ['']);
 
-  const { values, handleChange, handleSubmit } = useForm<CreateArticleDTO>({
-    initialValues: {
-      ...initialValues,
-      tagList: [],
-    },
-    onSubmit: async (formValues) => {
-      const nonEmptyTags = tags.filter((tag) => tag.trim() !== '');
-      await onSubmit({
-        ...formValues,
-        tagList: nonEmptyTags,
-      });
-    },
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<CreateArticleDTO>({
+    defaultValues: initialValues,
+    resolver: yupResolver(articleSchema),
   });
+
+  const onSubmitHandler = async (formValues: CreateArticleDTO) => {
+    const nonEmptyTags = tags.filter((tag) => tag.trim() !== '');
+    await onSubmit({
+      ...formValues,
+      tagList: nonEmptyTags,
+    });
+  };
 
   const handleTagChange = (index: number, value: string) => {
     const newTags = [...tags];
@@ -58,38 +63,35 @@ export const ArticleForm: React.FC<ArticleFormProps> = ({
         <Typography variant="h5" component="h1" gutterBottom align="center">
           {isEdit ? 'Edit Article' : 'Create Article'}
         </Typography>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmitHandler)}>
           <TextField
-            name="title"
+            {...register('title')}
             label="Title"
             placeholder="Title"
-            value={values.title}
-            onChange={handleChange}
+            error={!!errors.title}
+            helperText={errors.title?.message}
             fullWidth
             margin="normal"
-            required
           />
           <TextField
-            name="description"
+            {...register('description')}
             label="Short description"
-            placeholder="Title"
-            value={values.description}
-            onChange={handleChange}
+            placeholder="Description"
+            error={!!errors.description}
+            helperText={errors.description?.message}
             fullWidth
             margin="normal"
-            required
           />
           <TextField
-            name="body"
+            {...register('body')}
             label="Text"
             placeholder="Text"
-            value={values.body}
-            onChange={handleChange}
+            error={!!errors.body}
+            helperText={errors.body?.message}
             fullWidth
             multiline
             rows={10}
             margin="normal"
-            required
           />
           <Typography variant="subtitle1" gutterBottom align="left">
             Tags

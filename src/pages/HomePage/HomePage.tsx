@@ -1,11 +1,7 @@
 import { BlogList } from '../../components/BlogList/BlogList.tsx';
 
 const HomePage = () => {
-  return (
-    <>
-      <BlogList />
-    </>
-  );
+  return <BlogList />;
 };
 
 export default HomePage;

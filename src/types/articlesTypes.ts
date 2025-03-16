@@ -1,4 +1,4 @@
-import { BaseEntity, PaginatedResponse } from './common';
+import { BaseEntity } from './common';
 
 export interface Author {
   username: string;
@@ -26,11 +26,6 @@ export interface CreateArticleDTO {
   body: string;
   tagList: string[];
 }
-
-export interface UpdateArticleDTO extends Partial<CreateArticleDTO> {
-  slug: string;
-}
-
 export interface ArticleFilters {
   tag?: string;
   author?: string;

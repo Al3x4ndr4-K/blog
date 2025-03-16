@@ -4,23 +4,12 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useAppDispatch, useAppSelector } from '../../hooks/hooks.ts';
 import { loginUser, registerUser } from '../../store/slices/userSlice.ts';
 import { useNavigate } from 'react-router-dom';
-import { Box, TextField, Button, Typography, Alert, CircularProgress, FormControlLabel, Checkbox } from '@mui/material';
+import { Box, TextField, Button, Typography, Alert, FormControlLabel, Checkbox, CircularProgress } from '@mui/material';
 import { loginSchema, registerSchema } from '../../validation/schemas';
+import { AuthFormProps, AuthFormData } from '../../types/components';
 import { toast } from 'react-toastify';
 
-interface AuthFormProps {
-  type: 'login' | 'register';
-}
-
-interface FormData {
-  email: string;
-  password: string;
-  username?: string;
-  repeatPassword?: string;
-  acceptTerms?: boolean;
-}
-
-export const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
+export const AuthForm: React.FC<AuthFormProps> = ({ mode }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { status, error } = useAppSelector((state) => state.user);
@@ -29,13 +18,13 @@ export const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>({
-    resolver: yupResolver(type === 'login' ? loginSchema : registerSchema),
+  } = useForm<AuthFormData>({
+    resolver: yupResolver(mode === 'login' ? loginSchema : registerSchema),
   });
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmitHandler = async (data: AuthFormData) => {
     try {
-      if (type === 'login') {
+      if (mode === 'login') {
         const result = await dispatch(
           loginUser({
             email: data.email,
@@ -69,7 +58,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
   return (
     <Box
       component="form"
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(onSubmitHandler)}
       sx={{
         maxWidth: 400,
         mx: 'auto',
@@ -84,7 +73,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
       }}
     >
       <Typography variant="h5" component="h1" align="center">
-        {type === 'login' ? 'Sign In' : 'Create new account'}
+        {mode === 'login' ? 'Sign In' : 'Create new account'}
       </Typography>
 
       {error && (
@@ -93,7 +82,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
         </Alert>
       )}
 
-      {type === 'register' && (
+      {mode === 'register' && (
         <TextField
           label="Username"
           {...register('username')}
@@ -121,7 +110,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
         fullWidth
       />
 
-      {type === 'register' && (
+      {mode === 'register' && (
         <>
           <TextField
             label="Repeat password"
@@ -147,7 +136,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
       <Button type="submit" variant="contained" size="large" disabled={status === 'loading'} sx={{ mt: 1 }}>
         {status === 'loading' ? (
           <CircularProgress size={24} color="inherit" />
-        ) : type === 'login' ? (
+        ) : mode === 'login' ? (
           'Sign In'
         ) : (
           'Create'
@@ -155,7 +144,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
       </Button>
 
       <Typography align="center">
-        {type === 'login' ? (
+        {mode === 'login' ? (
           <>
             Don't have an account?{' '}
             <Button color="primary" onClick={() => navigate('/register')}>

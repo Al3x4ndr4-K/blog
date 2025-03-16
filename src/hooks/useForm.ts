@@ -1,24 +1,5 @@
 import { useState, ChangeEvent, FormEvent } from 'react';
-
-interface ValidationRules {
-  [key: string]: {
-    required?: boolean;
-    pattern?: RegExp;
-    minLength?: number;
-    maxLength?: number;
-    custom?: (value: string) => boolean;
-  };
-}
-
-interface ValidationErrors {
-  [key: string]: string;
-}
-
-interface UseFormProps<T> {
-  initialValues: T;
-  validationRules?: ValidationRules;
-  onSubmit: (values: T) => void | Promise<void>;
-}
+import { ValidationErrors, UseFormProps } from '../types/form';
 
 export const useForm = <T extends { [key: string]: any }>({
   initialValues,
@@ -68,7 +49,7 @@ export const useForm = <T extends { [key: string]: any }>({
     const { name, value } = e.target;
     setValues({ ...values, [name]: value });
     if (validationRules[name]) {
-      validate({ [name]: value });
+      validate({ [name]: value } as Partial<T>);
     }
   };
 

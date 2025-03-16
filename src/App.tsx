@@ -29,55 +29,53 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div>
-        <Header />
-        <Suspense fallback={<LoadingSpinner />}>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/articles" element={<HomePage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/articles/:slug" element={<ArticlePage />} />
-            <Route
-              path="/new-article"
-              element={
-                <PrivateRoute>
-                  <NewArticlePage />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/articles/:slug/edit"
-              element={
-                <PrivateRoute>
-                  <EditArticlePage />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/profile"
-              element={
-                <PrivateRoute>
-                  <ProfilePage />
-                </PrivateRoute>
-              }
-            />
-            <Route path="*" element={<Navigate to="/articles" replace />} />
-          </Routes>
-        </Suspense>
-        <ToastContainer
-          position="top-right"
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-        />
-      </div>
+      <Header />
+      <Suspense fallback={<LoadingSpinner />}>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/articles" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/articles/:slug" element={<ArticlePage />} />
+          <Route
+            path="/new-article"
+            element={
+              <PrivateRoute>
+                <NewArticlePage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/articles/:slug/edit"
+            element={
+              <PrivateRoute>
+                <EditArticlePage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <PrivateRoute>
+                <ProfilePage />
+              </PrivateRoute>
+            }
+          />
+          <Route path="*" element={<Navigate to="/articles" replace />} />
+        </Routes>
+      </Suspense>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </BrowserRouter>
   );
 }

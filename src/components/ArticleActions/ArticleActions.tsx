@@ -6,24 +6,21 @@ import { toast } from 'react-toastify';
 import { MESSAGES } from '../../constants/messages';
 import { retry } from '../../utils/retry';
 import styles from './ArticleActions.module.scss';
+import { ArticleActionsProps } from '../../types/components';
 
-interface ArticleActionsProps {
-  slug: string;
-}
-
-const ArticleActionsComponent: React.FC<ArticleActionsProps> = ({ slug }) => {
+export const ArticleActions: React.FC<ArticleActionsProps> = ({ article }) => {
   const navigate = useNavigate();
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
   const [isDeleting, setIsDeleting] = React.useState(false);
 
   const handleEdit = () => {
-    navigate(`/articles/${slug}/edit`);
+    navigate(`/articles/${article.slug}/edit`);
   };
 
   const handleDelete = async () => {
     try {
       setIsDeleting(true);
-      await retry(() => deleteArticle(slug), { maxAttempts: 2 });
+      await retry(() => deleteArticle(article.slug), { maxAttempts: 2 });
       toast.success(MESSAGES.SUCCESS.ARTICLE_DELETED);
       navigate('/');
     } catch (error) {
@@ -67,7 +64,3 @@ const ArticleActionsComponent: React.FC<ArticleActionsProps> = ({ slug }) => {
     </>
   );
 };
-
-export const ArticleActions = React.memo(ArticleActionsComponent, (prevProps, nextProps) => {
-  return prevProps.slug === nextProps.slug;
-});
