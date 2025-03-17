@@ -3,9 +3,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useAppDispatch, useAppSelector } from '../../hooks/hooks.ts';
 import { loginUser, registerUser } from '../../store/slices/userSlice.ts';
 import { useNavigate } from 'react-router-dom';
-import { Box, TextField, Button, Typography, Alert, FormControlLabel, Checkbox, CircularProgress } from '@mui/material';
+import { Alert, Box, Button, Checkbox, CircularProgress, FormControlLabel, TextField, Typography } from '@mui/material';
 import { loginSchema, registerSchema } from '../../validation/schemas';
-import { AuthFormProps, AuthFormData } from '../../types/components';
+import { AuthFormData, AuthFormProps } from '../../types/components';
 import { toast } from 'react-toastify';
 import { FC } from 'react';
 
@@ -134,13 +134,7 @@ export const AuthForm: FC<AuthFormProps> = ({ mode }) => {
       )}
 
       <Button type="submit" variant="contained" size="large" disabled={status === 'loading'} sx={{ mt: 1 }}>
-        {status === 'loading' ? (
-          <CircularProgress size={24} color="inherit" />
-        ) : mode === 'login' ? (
-          'Sign In'
-        ) : (
-          'Create'
-        )}
+        {status === 'loading' ? <CircularProgress size={24} color="inherit" /> : mode === 'login' ? 'Login' : 'Create'}
       </Button>
 
       <Typography align="center">

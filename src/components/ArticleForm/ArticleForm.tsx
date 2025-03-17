@@ -1,7 +1,7 @@
 import { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Box, TextField, Button, Paper, Typography } from '@mui/material';
+import { Box, Button, Paper, TextField, Typography } from '@mui/material';
 import { articleSchema } from '../../validation/schemas';
 import styles from './ArticleForm.module.scss';
 import { CreateArticleDTO } from '../../types/articlesTypes';
@@ -123,7 +123,7 @@ export const ArticleForm: FC<ArticleFormProps> = ({ initialValues, onSubmit, isE
             disabled={isLoading}
             className={styles.submitButton}
           >
-            {isLoading ? 'Saving...' : isEdit ? 'Edit article' : 'Send'}
+            {isLoading ? 'Saving...' : isEdit ? 'Send' : 'Send'}
           </Button>
         </form>
       </Paper>
