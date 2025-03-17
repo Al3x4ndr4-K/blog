@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText } from '@mui/material';
 import { deleteArticle } from '../../api/apiArticles';
@@ -7,11 +6,12 @@ import { MESSAGES } from '../../constants/messages';
 import { retry } from '../../utils/retry';
 import styles from './ArticleActions.module.scss';
 import { ArticleActionsProps } from '../../types/components';
+import { FC, useState } from 'react';
 
-export const ArticleActions: React.FC<ArticleActionsProps> = ({ article }) => {
+export const ArticleActions: FC<ArticleActionsProps> = ({ article }) => {
   const navigate = useNavigate();
-  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
-  const [isDeleting, setIsDeleting] = React.useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleEdit = () => {
     navigate(`/articles/${article.slug}/edit`);

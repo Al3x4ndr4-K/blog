@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppSelector } from '../../hooks/hooks';
 import { favoriteArticle, unfavoriteArticle } from '../../api/apiArticles';
@@ -8,18 +7,19 @@ import { formatNumber } from '../../utils/formatters';
 import { retry } from '../../utils/retry';
 import styles from './LikeButton.module.scss';
 import { LikeButtonProps } from '../../types/components';
+import { FC, useState } from 'react';
 
-export const LikeButton: React.FC<LikeButtonProps> = ({
+export const LikeButton: FC<LikeButtonProps> = ({
   articleSlug,
   favoritesCount: initialCount,
   favorited: initialFavorited,
 }) => {
   const navigate = useNavigate();
   const { user } = useAppSelector((state) => state.user);
-  const [isLiking, setIsLiking] = React.useState(false);
-  const [isUpdating, setIsUpdating] = React.useState(false);
-  const [favorited, setFavorited] = React.useState(initialFavorited);
-  const [favoritesCount, setFavoritesCount] = React.useState(initialCount);
+  const [isLiking, setIsLiking] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [favorited, setFavorited] = useState(initialFavorited);
+  const [favoritesCount, setFavoritesCount] = useState(initialCount);
 
   const handleLike = async () => {
     if (!user) {

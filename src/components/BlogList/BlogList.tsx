@@ -1,4 +1,3 @@
-import React from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks/hooks.ts';
 import { fetchArticles, setCurrentPage } from '../../store/slices/articlesSlice.ts';
 import { Blog } from '../Blog/Blog';
@@ -6,13 +5,14 @@ import { Alert, Box, Pagination } from '@mui/material';
 import { ARTICLES_PER_PAGE, PAGINATION_COLOR, PAGINATION_SIZE } from '../../constants/pagination';
 import { Article } from '../../types/articlesTypes.ts';
 import { LoadingSpinner } from '../LoadingSpinner/LoadingSpinner';
+import { ChangeEvent, FC, useEffect } from 'react';
 
-export const BlogList: React.FC = () => {
+export const BlogList: FC = () => {
   const dispatch = useAppDispatch();
   const { articles, status, error, currentPage, totalArticles } = useAppSelector((state) => state.articles);
   const totalPages = Math.ceil(totalArticles / ARTICLES_PER_PAGE);
 
-  React.useEffect(() => {
+  useEffect(() => {
     dispatch(
       fetchArticles({
         limit: ARTICLES_PER_PAGE,
@@ -21,7 +21,7 @@ export const BlogList: React.FC = () => {
     );
   }, [dispatch, currentPage]);
 
-  const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
+  const handlePageChange = (_event: ChangeEvent<unknown>, value: number) => {
     dispatch(setCurrentPage(value));
   };
 

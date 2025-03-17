@@ -1,4 +1,3 @@
-import React from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useAppDispatch, useAppSelector } from '../../hooks/hooks.ts';
@@ -8,8 +7,9 @@ import { Box, TextField, Button, Typography, Alert, FormControlLabel, Checkbox, 
 import { loginSchema, registerSchema } from '../../validation/schemas';
 import { AuthFormProps, AuthFormData } from '../../types/components';
 import { toast } from 'react-toastify';
+import { FC } from 'react';
 
-export const AuthForm: React.FC<AuthFormProps> = ({ mode }) => {
+export const AuthForm: FC<AuthFormProps> = ({ mode }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { status, error } = useAppSelector((state) => state.user);

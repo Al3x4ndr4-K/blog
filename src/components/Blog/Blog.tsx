@@ -1,5 +1,4 @@
 import blog from './Blog.module.scss';
-import React from 'react';
 import { Article } from '../../types/articlesTypes.ts';
 import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
@@ -7,13 +6,14 @@ import remarkGfm from 'remark-gfm';
 import { useAppSelector } from '../../hooks/hooks';
 import { LikeButton } from '../LikeButton/LikeButton';
 import { ArticleActions } from '../ArticleActions/ArticleActions';
+import { FC } from 'react';
 
 interface BlogProps {
   article: Article;
   isFullView?: boolean;
 }
 
-export const Blog: React.FC<BlogProps> = ({ article, isFullView = false }) => {
+export const Blog: FC<BlogProps> = ({ article, isFullView = false }) => {
   const { user } = useAppSelector((state) => state.user);
   const isAuthor = user?.username === article.author.username;
 

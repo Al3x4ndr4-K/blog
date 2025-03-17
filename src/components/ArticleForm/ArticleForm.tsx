@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Box, TextField, Button, Paper, Typography } from '@mui/material';
@@ -13,12 +13,7 @@ interface ArticleFormProps {
   isLoading?: boolean;
 }
 
-export const ArticleForm: React.FC<ArticleFormProps> = ({
-  initialValues,
-  onSubmit,
-  isEdit = false,
-  isLoading = false,
-}) => {
+export const ArticleForm: FC<ArticleFormProps> = ({ initialValues, onSubmit, isEdit = false, isLoading = false }) => {
   const [tags, setTags] = useState<string[]>(initialValues.tagList?.length ? initialValues.tagList : ['']);
 
   const {

@@ -1,10 +1,10 @@
-import React from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useAppDispatch, useAppSelector } from '../../hooks/hooks.ts';
 import { updateUserProfile } from '../../store/slices/userSlice.ts';
-import { Box, TextField, Button, Typography, Alert, CircularProgress } from '@mui/material';
+import { Alert, Box, Button, CircularProgress, TextField, Typography } from '@mui/material';
 import { profileSchema } from '../../validation/schemas';
+import { FC } from 'react';
 
 interface FormData {
   username: string;
@@ -13,7 +13,7 @@ interface FormData {
   image?: string;
 }
 
-export const ProfileForm: React.FC = () => {
+export const ProfileForm: FC = () => {
   const dispatch = useAppDispatch();
   const { user, status, error } = useAppSelector((state) => state.user);
 

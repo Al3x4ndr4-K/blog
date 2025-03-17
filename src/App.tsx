@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import './App.css';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { Header } from './components/Header/Header';
@@ -9,13 +9,13 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useAppDispatch } from './hooks/hooks';
 import { fetchCurrentUser } from './store/slices/userSlice';
 
-const HomePage = React.lazy(() => import('./pages/HomePage/HomePage'));
-const LoginPage = React.lazy(() => import('./pages/LoginPage/LoginPage'));
-const RegisterPage = React.lazy(() => import('./pages/RegisterPage/RegisterPage'));
-const ArticlePage = React.lazy(() => import('./pages/ArticlePage/ArticlePage'));
-const NewArticlePage = React.lazy(() => import('./pages/NewArticlePage/NewArticlePage'));
-const EditArticlePage = React.lazy(() => import('./pages/EditArticlePage/EditArticlePage'));
-const ProfilePage = React.lazy(() => import('./pages/ProfilePage/ProfilePage'));
+const HomePage = lazy(() => import('./pages/HomePage/HomePage'));
+const LoginPage = lazy(() => import('./pages/LoginPage/LoginPage'));
+const RegisterPage = lazy(() => import('./pages/RegisterPage/RegisterPage'));
+const ArticlePage = lazy(() => import('./pages/ArticlePage/ArticlePage'));
+const NewArticlePage = lazy(() => import('./pages/NewArticlePage/NewArticlePage'));
+const EditArticlePage = lazy(() => import('./pages/EditArticlePage/EditArticlePage'));
+const ProfilePage = lazy(() => import('./pages/ProfilePage/ProfilePage'));
 
 function App() {
   const dispatch = useAppDispatch();
