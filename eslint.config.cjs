@@ -3,7 +3,6 @@ const react = require('eslint-plugin-react');
 const prettier = require('eslint-plugin-prettier');
 const _import = require('eslint-plugin-import');
 const reactHooks = require('eslint-plugin-react-hooks');
-const { fixupConfigRules, fixupPluginRules } = require('@eslint/compat');
 const reactRefresh = require('eslint-plugin-react-refresh');
 const jsxA11Y = require('eslint-plugin-jsx-a11y');
 const tseslint = require('@typescript-eslint/eslint-plugin');
@@ -21,10 +20,10 @@ const customEslintConfig = {
   },
   plugins: {
     '@typescript-eslint': tseslint,
-    react: fixupPluginRules(react),
-    prettier: fixupPluginRules(prettier),
-    import: fixupPluginRules(_import),
-    'react-hooks': fixupPluginRules(reactHooks),
+    react,
+    prettier,
+    import: _import,
+    'react-hooks': reactHooks,
     'react-refresh': reactRefresh,
     'jsx-a11y': jsxA11Y,
   },
@@ -79,5 +78,5 @@ module.exports = [
   {
     ignores: ['**/node_modules', '**/dist', '**/build', 'postcss.config.mjs'],
   },
-  ...fixupConfigRules(customEslintConfig),
+  customEslintConfig,
 ];
