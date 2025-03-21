@@ -7,21 +7,21 @@ import styles from './ArticleForm.module.scss';
 import { CreateArticleDTO } from '../../types/articlesTypes';
 
 interface ArticleFormProps {
-  initialValues: CreateArticleDTO;
+  mode: 'create' | 'edit';
+  initialData?: CreateArticleDTO;
   onSubmit: (values: CreateArticleDTO) => Promise<void>;
-  isEdit?: boolean;
   isLoading?: boolean;
 }
 
-export const ArticleForm: FC<ArticleFormProps> = ({ initialValues, onSubmit, isEdit = false, isLoading = false }) => {
-  const [tags, setTags] = useState<string[]>(initialValues.tagList?.length ? initialValues.tagList : ['']);
+export const ArticleForm: FC<ArticleFormProps> = ({ mode, initialData, onSubmit, isLoading = false }) => {
+  const [tags, setTags] = useState<string[]>(initialData?.tagList?.length ? initialData.tagList : ['']);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<CreateArticleDTO>({
-    defaultValues: initialValues,
+    defaultValues: initialData,
     resolver: yupResolver(articleSchema),
   });
 
@@ -56,7 +56,7 @@ export const ArticleForm: FC<ArticleFormProps> = ({ initialValues, onSubmit, isE
     <Box sx={{ pb: 2 }}>
       <Paper className={styles.form}>
         <Typography variant="h5" component="h1" gutterBottom align="center">
-          {isEdit ? 'Edit Article' : 'Create Article'}
+          {mode === 'edit' ? 'Edit Article' : 'Create Article'}
         </Typography>
         <form onSubmit={handleSubmit(onSubmitHandler)}>
           <TextField
@@ -106,11 +106,11 @@ export const ArticleForm: FC<ArticleFormProps> = ({ initialValues, onSubmit, isE
                   },
                 }}
               />
-              <button onClick={() => handleDeleteTag(index)} className={styles.deleteTagButton}>
+              <button type="button" onClick={() => handleDeleteTag(index)} className={styles.deleteTagButton}>
                 Delete
               </button>
               {index === tags.length - 1 && (
-                <button onClick={handleAddTag} className={styles.addTagButton}>
+                <button type="button" onClick={handleAddTag} className={styles.addTagButton}>
                   Add tag
                 </button>
               )}
@@ -123,7 +123,7 @@ export const ArticleForm: FC<ArticleFormProps> = ({ initialValues, onSubmit, isE
             disabled={isLoading}
             className={styles.submitButton}
           >
-            {isLoading ? 'Saving...' : isEdit ? 'Send' : 'Send'}
+            {isLoading ? 'Saving...' : mode === 'edit' ? 'Send' : 'Send'}
           </Button>
         </form>
       </Paper>

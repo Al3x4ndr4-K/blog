@@ -6,23 +6,27 @@ import { ARTICLES_PER_PAGE, PAGINATION_COLOR, PAGINATION_SIZE } from '../../cons
 import { Article } from '../../types/articlesTypes.ts';
 import { LoadingSpinner } from '../LoadingSpinner/LoadingSpinner';
 import { ChangeEvent, FC, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 export const BlogList: FC = () => {
   const dispatch = useAppDispatch();
-  const { articles, status, error, currentPage, totalArticles } = useAppSelector((state) => state.articles);
+  const { articles, status, error, totalArticles } = useAppSelector((state) => state.articles);
   const totalPages = Math.ceil(totalArticles / ARTICLES_PER_PAGE);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentPageFromParams = Number(searchParams.get('page')) || 1;
 
   useEffect(() => {
     dispatch(
       fetchArticles({
         limit: ARTICLES_PER_PAGE,
-        offset: (currentPage - 1) * ARTICLES_PER_PAGE,
+        offset: (currentPageFromParams - 1) * ARTICLES_PER_PAGE,
       })
     );
-  }, [dispatch, currentPage]);
+  }, [dispatch, currentPageFromParams]);
 
-  const handlePageChange = (_event: ChangeEvent<unknown>, value: number) => {
-    dispatch(setCurrentPage(value));
+  const handlePageChange = (_: ChangeEvent<unknown>, page: number) => {
+    setSearchParams({ page: page.toString() });
+    dispatch(setCurrentPage(page));
   };
 
   if (status === 'loading') {
@@ -54,7 +58,7 @@ export const BlogList: FC = () => {
             <Pagination
               shape="rounded"
               count={totalPages}
-              page={currentPage}
+              page={currentPageFromParams}
               onChange={handlePageChange}
               color={PAGINATION_COLOR}
               size={PAGINATION_SIZE}

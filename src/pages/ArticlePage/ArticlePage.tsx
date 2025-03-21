@@ -1,9 +1,10 @@
 import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks/hooks.ts';
 import { fetchArticle } from '../../store/slices/articlesSlice.ts';
-import { Alert, Box, CircularProgress } from '@mui/material';
+import { Alert, Box } from '@mui/material';
 import { Blog } from '../../components/Blog/Blog';
 import { useEffect } from 'react';
+import { LoadingSpinner } from '../../components/LoadingSpinner/LoadingSpinner.tsx';
 
 const ArticlePage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -17,11 +18,7 @@ const ArticlePage = () => {
   }, [dispatch, slug]);
 
   if (status === 'loading') {
-    return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-        <CircularProgress />
-      </Box>
-    );
+    return <LoadingSpinner />;
   }
 
   if (error || !currentArticle) {

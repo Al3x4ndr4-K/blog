@@ -7,6 +7,7 @@ const initialState: UserState = {
   user: null,
   status: 'idle',
   error: null,
+  isInitializing: true,
 };
 
 interface ApiErrorResponse {
@@ -75,6 +76,7 @@ export const fetchCurrentUser = createAsyncThunk<UserState['user']>(
       const response = await getCurrentUser();
       return response.user;
     } catch (error) {
+      localStorage.removeItem('token');
       return rejectWithValue(handleApiError(error));
     }
   }
@@ -100,6 +102,7 @@ const userSlice = createSlice({
       state.user = null;
       state.status = 'idle';
       state.error = null;
+      state.isInitializing = false;
       localStorage.removeItem('token');
     },
   },
@@ -139,10 +142,12 @@ const userSlice = createSlice({
         state.status = 'succeeded';
         state.user = action.payload;
         state.error = null;
+        state.isInitializing = false;
       })
       .addCase(fetchCurrentUser.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload as string;
+        state.isInitializing = false;
       })
       .addCase(updateUserProfile.pending, (state) => {
         state.status = 'loading';

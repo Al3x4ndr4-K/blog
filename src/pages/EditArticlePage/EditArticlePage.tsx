@@ -1,65 +1,56 @@
-import { useNavigate, useParams } from 'react-router-dom';
-import { ArticleForm } from '../../components/ArticleForm/ArticleForm';
+import { useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
 import { fetchArticle } from '../../store/slices/articlesSlice';
+import { LoadingSpinner } from '../../components/LoadingSpinner/LoadingSpinner';
+import { ArticleForm } from '../../components/ArticleForm/ArticleForm';
 import { updateArticle } from '../../api/apiArticles';
-import { Alert, Box, CircularProgress } from '@mui/material';
-import { CreateArticleDTO } from '../../types/articlesTypes';
 import { toast } from 'react-toastify';
-import { useEffect, useState } from 'react';
+import { CreateArticleDTO } from '../../types/articlesTypes';
+import { PrivateRoute } from '../../components/PrivateRoute/PrivateRoute';
 
 const EditArticlePage = () => {
-  const { slug } = useParams<{ slug: string }>();
+  const { slug } = useParams();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { currentArticle, status, error } = useAppSelector((state) => state.articles);
-  const [isLoading, setIsLoading] = useState(false);
+  const {
+    currentArticle: article,
+    status: articleStatus,
+    error: articleError,
+  } = useAppSelector((state) => state.articles);
+  const { status: userStatus } = useAppSelector((state) => state.user);
 
   useEffect(() => {
-    if (slug) {
+    if (slug && userStatus === 'succeeded') {
       dispatch(fetchArticle(slug));
     }
-  }, [dispatch, slug]);
+  }, [dispatch, slug, userStatus]);
 
   const handleSubmit = async (data: CreateArticleDTO) => {
     if (!slug) return;
-
     try {
-      setIsLoading(true);
       const response = await updateArticle(slug, data);
-      toast.success('Статья успешно обновлена');
+      toast.success('Article updated successfully');
       navigate(`/articles/${response.article.slug}`);
     } catch (error) {
-      toast.error('Ошибка при обновлении статьи');
-    } finally {
-      setIsLoading(false);
+      toast.error('Error updating article');
     }
   };
 
-  if (status === 'loading') {
-    return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-        <CircularProgress />
-      </Box>
-    );
+  if (userStatus === 'loading' || articleStatus === 'loading' || !article) {
+    return <LoadingSpinner />;
   }
 
-  if (error || !currentArticle) {
-    return (
-      <Box sx={{ mt: 4 }}>
-        <Alert severity="error">{error || 'Статья не найдена'}</Alert>
-      </Box>
-    );
+  if (articleError) {
+    navigate('/articles');
+    return null;
   }
 
-  const initialValues: CreateArticleDTO = {
-    title: currentArticle.title,
-    description: currentArticle.description,
-    body: currentArticle.body,
-    tagList: currentArticle.tagList,
-  };
-
-  return <ArticleForm initialValues={initialValues} onSubmit={handleSubmit} isLoading={isLoading} isEdit />;
+  return <ArticleForm mode="edit" initialData={article} onSubmit={handleSubmit} />;
 };
 
-export default EditArticlePage;
+export default () => (
+  <PrivateRoute>
+    <EditArticlePage />
+  </PrivateRoute>
+);

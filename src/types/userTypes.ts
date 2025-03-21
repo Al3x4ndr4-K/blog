@@ -2,14 +2,15 @@ export interface User {
   email: string;
   token: string;
   username: string;
-  bio: string | null;
-  image: string | null;
+  bio?: string;
+  image?: string;
 }
 
 export interface UserState {
   user: User | null;
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
+  isInitializing: boolean;
 }
 
 export interface LoginRequest {

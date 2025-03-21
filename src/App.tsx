@@ -6,7 +6,7 @@ import { PrivateRoute } from './components/PrivateRoute/PrivateRoute';
 import { LoadingSpinner } from './components/LoadingSpinner/LoadingSpinner';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useAppDispatch } from './hooks/hooks';
+import { useAppDispatch, useAppSelector } from './hooks/hooks';
 import { fetchCurrentUser } from './store/slices/userSlice';
 
 const HomePage = lazy(() => import('./pages/HomePage/HomePage'));
@@ -19,6 +19,7 @@ const ProfilePage = lazy(() => import('./pages/ProfilePage/ProfilePage'));
 
 function App() {
   const dispatch = useAppDispatch();
+  const { status: userStatus } = useAppSelector((state) => state.user);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -26,6 +27,10 @@ function App() {
       dispatch(fetchCurrentUser());
     }
   }, [dispatch]);
+
+  if (userStatus === 'loading' && localStorage.getItem('token')) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <BrowserRouter>
